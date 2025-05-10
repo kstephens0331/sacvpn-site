@@ -1,19 +1,4 @@
 import React, { useState } from "react";
-import { auth, googleProvider, appleProvider, db } from "../firebase";
-import {
-  signInWithEmailAndPassword,
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-} from "firebase/auth";
-import {
-  doc,
-  setDoc,
-  collection,
-  query,
-  where,
-  getDocs,
-  getDoc, // ✅ Add this line
-} from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -23,95 +8,22 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // ✅ Generate unique 7-digit account number
-  const generateAccountNumber = async () => {
-    let unique = false;
-    let accountNumber;
-
-    while (!unique) {
-      accountNumber = Math.floor(1000000 + Math.random() * 9000000).toString();
-      const q = query(
-        collection(db, "users"),
-        where("accountNumber", "==", accountNumber)
-      );
-      const existing = await getDocs(q);
-      if (existing.empty) unique = true;
+  const handleAuth = () => {
+    if (!email || !password) {
+      setError("Please enter an email and password.");
+      return;
     }
 
-    return accountNumber;
+    // Simulate successful login/signup
+    navigate("/dashboard");
   };
 
-  // ✅ Handle signup or login
-  const handleAuth = async () => {
-    try {
-      setError("");
-      let userCredential;
-
-      if (isRegistering) {
-        console.log("🔐 Creating account...");
-        userCredential = await createUserWithEmailAndPassword(auth, email, password);
-
-        const accountNumber = await generateAccountNumber();
-        console.log("📄 Generated account number:", accountNumber);
-
-        await setDoc(doc(db, "users", userCredential.user.uid), {
-          email,
-          accountNumber,
-          createdAt: new Date(),
-        });
-
-        console.log("✅ User saved to Firestore.");
-      } else {
-        console.log("🔓 Logging in...");
-        userCredential = await signInWithEmailAndPassword(auth, email, password);
-      }
-
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("🔥 Error during auth:", err.message);
-      setError(err.message);
-    }
+  const signInWithGoogle = () => {
+    navigate("/dashboard");
   };
 
-  // ✅ Google sign-in
-  const signInWithGoogle = async () => {
-    try {
-      setError("");
-      const result = await signInWithPopup(auth, googleProvider);
-      const user = result.user;
-  
-      // Check if Firestore document exists
-      const userRef = doc(db, "users", user.uid);
-      const userDoc = await getDoc(userRef);
-  
-      if (!userDoc.exists()) {
-        const accountNumber = await generateAccountNumber();
-        await setDoc(userRef, {
-          email: user.email,
-          accountNumber,
-          createdAt: new Date(),
-        });
-        console.log("✅ Google user saved to Firestore.");
-      } else {
-        console.log("✅ Google user already exists in Firestore.");
-      }
-      
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("🔥 Error during Google sign-in:", err.message);
-      setError(err.message);
-    }
-  };
-
-  // ✅ Apple sign-in
-  const signInWithApple = async () => {
-    try {
-      setError("");
-      await signInWithPopup(auth, appleProvider);
-      navigate("/dashboard");
-    } catch (err) {
-      setError(err.message);
-    }
+  const signInWithApple = () => {
+    navigate("/dashboard");
   };
 
   return (
