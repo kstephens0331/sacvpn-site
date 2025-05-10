@@ -5,11 +5,11 @@
   "type": "module",
   "homepage": "https://kstephens0331.github.io/sacvpn-site",
   "scripts": {
-  "dev": "vite",
-  "build": "vite build",
-  "predeploy": "npm run build",
-  "deploy": "gh-pages -d dist"
-},
+    "dev": "vite",
+    "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist"
+  },
   "dependencies": {
     "firebase": "^11.6.1",
     "react": "^19.1.0",
