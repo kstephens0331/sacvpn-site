@@ -5,7 +5,6 @@ import Pricing from './pages/Pricing';
 import Contact from './pages/Contact';
 import Login from './pages/Login';
 import Faq from './pages/Faq';
-import ProtectedRoute from "./components/ProtectedRoute";
 import Dashboard from "./pages/Dashboard";
 
 function App() {
@@ -19,14 +18,7 @@ function App() {
           <Route path="/login" element={<Login />} />
           <Route path="/faq" element={<Faq />} />
           <Route path="/login" element={<Login />} />
-          <Route
-  path="/dashboard"
-  element={
-    <ProtectedRoute>
-      <Dashboard />
-    </ProtectedRoute>
-  }
-/>
+          <Route path="/dashboard" element={<Dashboard />} />
         </Route>
       </Routes>
     </Router>
